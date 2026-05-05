@@ -1,6 +1,29 @@
 """Centralized application config — all env-driven, no scattered os.environ calls."""
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+# ─────────────────────────────────────────────────────────────────────────────
+# CACHE_VERSION — bump this whenever scoring logic, weights, or thresholds
+# change in a way that would make old cached verdicts wrong.
+#
+# Bumping this string makes every existing cached verdict unreachable in one
+# step — no manual Redis flush needed. Old keys age out naturally via their TTL.
+#
+# When to bump:
+#   ✓ Changed a score_contribution value in any signal
+#   ✓ Changed risk_threshold_caution / risk_threshold_danger
+#   ✓ Added or removed a signal
+#   ✓ Changed signal logic that affects whether `triggered` fires
+#
+# When NOT to bump:
+#   ✗ Refactored code without changing behavior
+#   ✗ Fixed a typo in an explanation string
+#   ✗ Renamed a variable
+#
+# The startup safety check below will warn you if it detects scoring-relevant
+# code changed but you forgot to bump this.
+# ─────────────────────────────────────────────────────────────────────────────
+CACHE_VERSION = "v2"
+
 
 class Settings(BaseSettings):
     # External API keys

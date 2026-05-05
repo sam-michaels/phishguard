@@ -1,16 +1,20 @@
-"""Redis-backed verdict cache with hashed keys and verdict-aware TTLs."""
+"""Redis-backed verdict cache with hashed keys and verdict-aware TTLs.
+
+Cache keys are versioned (CACHE_VERSION in config). Bumping the version makes
+every existing cached verdict unreachable in one step — no manual flush needed.
+"""
 import hashlib
 from typing import Optional
 
 import redis.asyncio as redis
 
 from app.api.schemas.scan import ScanVerdict
-from app.config import settings
+from app.config import CACHE_VERSION, settings
 
 
 def _key(url: str) -> str:
     h = hashlib.sha256(url.encode()).hexdigest()
-    return f"verdict:{h}"
+    return f"verdict:{CACHE_VERSION}:{h}"
 
 
 def _ttl_for_verdict(verdict_label: str) -> int:

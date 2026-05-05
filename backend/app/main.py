@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.routes import health, merchant, scan
 from app.config import settings
 from app.core.cache import cache
+from app.core.cache_safety import check_scoring_fingerprint
 
 logging.basicConfig(level=settings.log_level)
 logger = logging.getLogger("phishguard")
@@ -15,6 +16,7 @@ logger = logging.getLogger("phishguard")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    check_scoring_fingerprint()
     await cache.connect()
     yield
     await cache.disconnect()
