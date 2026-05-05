@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <span class="logo-icon">🛡️</span>
+        <span class="logo-text">PhishGuard</span>
+      </div>
+    </header>
+
+    <main id="main">
+      <div id="loading" class="state">
+        <div class="spinner"></div>
+        <p>Loading verdict…</p>
+      </div>
+
+      <div id="verdict-card" class="state hidden">
+        <div class="verdict-header">
+          <div id="verdict-icon" class="verdict-icon"></div>
+          <div class="verdict-meta">
+            <div id="verdict-label" class="verdict-label"></div>
+            <div id="verdict-score" class="verdict-score"></div>
+          </div>
+        </div>
+
+        <div id="verdict-url" class="verdict-url"></div>
+        <div id="verdict-summary" class="verdict-summary"></div>
+
+        <details id="signals-section" class="signals-section">
+          <summary>Detection signals</summary>
+          <ul id="signals-list" class="signals-list"></ul>
+        </details>
+      </div>
+
+      <div id="empty" class="state hidden">
+        <p class="muted">No verdict yet for this tab.</p>
+        <p class="muted small">PhishGuard scans pages automatically when you navigate to them.</p>
+      </div>
+    </main>
+
+    <footer>
+      <a href="#" id="rescan">Re-scan this page</a>
+    </footer>
+  </div>
+
+  <script src="../vendor/browser-polyfill.min.js"></script>
+  <script src="config.js"></script>
+  <script src="api.js"></script>
+  <script src="storage.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

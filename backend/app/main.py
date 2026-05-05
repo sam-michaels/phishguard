@@ -1,12 +1,16 @@
 """FastAPI application entrypoint."""
+import logging
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routes import health, merchant, scan
 from app.config import settings
 from app.core.cache import cache
+
+logging.basicConfig(level=settings.log_level)
+logger = logging.getLogger("phishguard")
 
 
 @asynccontextmanager
@@ -25,11 +29,21 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins,
+    allow_origin_regex=settings.cors_origin_regex,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    """Log every request — invaluable for debugging extension connectivity."""
+    origin = request.headers.get("origin", "—")
+    logger.info(f"{request.method} {request.url.path}  origin={origin}")
+    response = await call_next(request)
+    logger.info(f"  → {response.status_code}")
+    return response
 
 app.include_router(health.router, tags=["health"])
 app.include_router(scan.router, prefix="/api/v1/scan", tags=["scan"])

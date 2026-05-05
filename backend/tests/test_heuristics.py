@@ -11,7 +11,11 @@ def test_clean_url_triggers_nothing():
 
 
 def test_ip_host_detected():
-    assert "ip_host" in _names(check_heuristics("http://192.168.1.1/login"))
+    results = check_heuristics("http://192.168.1.1/login")
+    assert "ip_host" in _names(results)
+    # IP host alone should clear the caution threshold (31)
+    ip_signal = next(r for r in results if r.name == "ip_host")
+    assert ip_signal.score_contribution >= 31
 
 
 def test_at_symbol_detected():

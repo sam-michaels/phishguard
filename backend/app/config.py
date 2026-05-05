@@ -9,11 +9,15 @@ class Settings(BaseSettings):
     # Infrastructure
     redis_url: str = "redis://localhost:6379"
 
-    # CORS — extension origins go here once we have an extension ID
-    cors_origins: list[str] = [
-        "chrome-extension://*",
-        "http://localhost:3000",
-    ]
+    # CORS — regex-matched so dynamic extension IDs are accepted without
+    # needing to know them ahead of time. Firefox uses moz-extension://<UUID>
+    # which can contain uppercase hex; Chrome uses chrome-extension://<32 lowercase letters>.
+    cors_origin_regex: str = (
+        r"^(chrome-extension://[a-z]{32}|"
+        r"moz-extension://[a-fA-F0-9-]+|"
+        r"http://localhost(:\d+)?|"
+        r"http://127\.0\.0\.1(:\d+)?)$"
+    )
 
     # Operational
     environment: str = "development"

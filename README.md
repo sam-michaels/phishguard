@@ -34,8 +34,8 @@ cd backend && pip install -r requirements.txt && pytest
 
 | Phase | What | Status |
 |-------|------|--------|
-| 1 | URL analysis: typosquatting, domain age, VirusTotal, heuristics | In progress |
-| 2 | Chrome extension wired to backend | Planned |
+| 1 | URL analysis: typosquatting, domain age, VirusTotal, heuristics | ✅ Complete |
+| 2 | Chrome extension wired to backend | ✅ Complete |
 | 3 | LLM content analysis + RAG threat intel | Planned |
 | 4 | Buy-scanner activation (merchant verification) | Planned |
 | 5 | Auth, dashboard, scan history | Planned |
