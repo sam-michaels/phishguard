@@ -27,7 +27,7 @@ def check_heuristics(url: str) -> list[SignalResult]:
         results.append(SignalResult(
             name="ip_host",
             triggered=True,
-            score_contribution=30,
+            score_contribution=45,
             explanation="URL uses raw IP address instead of domain — common phishing pattern.",
         ))
 

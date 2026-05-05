@@ -34,3 +34,20 @@ app.add_middleware(
 app.include_router(health.router, tags=["health"])
 app.include_router(scan.router, prefix="/api/v1/scan", tags=["scan"])
 app.include_router(merchant.router, prefix="/api/v1/merchant", tags=["merchant"])
+
+
+@app.get("/", tags=["root"])
+async def root() -> dict:
+    """Friendly landing response — points users to interactive docs."""
+    return {
+        "service": "PhishGuard API",
+        "version": "0.1.0",
+        "status": "running",
+        "docs": "/docs",
+        "health": "/health",
+        "scan_endpoint": "POST /api/v1/scan/url",
+        "example": {
+            "url": "POST http://localhost:8000/api/v1/scan/url",
+            "body": {"url": "https://paypa1.com/login"},
+        },
+    }
