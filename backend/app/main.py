@@ -9,6 +9,7 @@ from app.api.routes import health, merchant, scan
 from app.config import settings
 from app.core.cache import cache
 from app.core.cache_safety import check_scoring_fingerprint
+from app.services.threat_intel import rag_retriever
 
 logging.basicConfig(level=settings.log_level)
 logger = logging.getLogger("phishguard")
@@ -18,6 +19,12 @@ logger = logging.getLogger("phishguard")
 async def lifespan(app: FastAPI):
     check_scoring_fingerprint()
     await cache.connect()
+    # Warm the RAG collection at startup so the first scan isn't slow.
+    # Failure here is non-fatal — the signal will fail-soft on each call.
+    try:
+        rag_retriever._initialize()
+    except Exception as e:
+        logger.warning(f"RAG warmup failed (continuing without it): {e}")
     yield
     await cache.disconnect()
 

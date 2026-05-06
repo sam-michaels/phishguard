@@ -11,6 +11,10 @@ router = APIRouter()
 async def scan_url_endpoint(request: URLScanRequest) -> ScanVerdict:
     """Run the full URL analysis pipeline and return a verdict."""
     try:
-        return await scan_url(str(request.url))
+        return await scan_url(
+            str(request.url),
+            page_title=request.page_title,
+            form_fields=request.form_fields,
+        )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Scan failed: {e}") from e

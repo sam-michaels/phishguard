@@ -22,7 +22,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 # The startup safety check below will warn you if it detects scoring-relevant
 # code changed but you forgot to bump this.
 # ─────────────────────────────────────────────────────────────────────────────
-CACHE_VERSION = "v2"
+CACHE_VERSION = "v6"
 
 
 class Settings(BaseSettings):
@@ -54,6 +54,33 @@ class Settings(BaseSettings):
     # Scoring thresholds (risk_score 0-100)
     risk_threshold_caution: int = 31
     risk_threshold_danger: int = 66
+
+    # ─── Phase 3 ──────────────────────────────────────────────────────────
+    # Provider selection — "ollama" (local dev) or "groq" (production).
+    # Swap with LLM_PROVIDER env var; no code changes needed.
+    llm_provider: str = "ollama"
+
+    # Ollama — local LLM server. host.docker.internal lets the backend
+    # container reach Ollama running on the Mac/Windows host.
+    ollama_base_url: str = "http://host.docker.internal:11434"
+    ollama_model: str = "llama3.1:8b"
+    ollama_timeout_seconds: float = 15.0
+
+    # Groq — hosted inference. Free tier covers small-scale testing.
+    groq_api_key: str = ""
+    groq_model: str = "llama-3.1-8b-instant"
+
+    # Toggle the LLM signal off entirely (useful when neither provider is
+    # available or for debugging). The pipeline just skips it cleanly.
+    llm_enabled: bool = True
+
+    # RAG settings
+    rag_enabled: bool = True
+    rag_corpus_path: str = "app/data/phishing_corpus.jsonl"
+    rag_chroma_path: str = "app/data/chroma_db"
+    rag_collection_name: str = "phishing_patterns"
+    rag_embedding_model: str = "all-MiniLM-L6-v2"
+    rag_top_k: int = 5
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
