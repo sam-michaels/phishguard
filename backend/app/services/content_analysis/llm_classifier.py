@@ -60,12 +60,14 @@ async def check_llm_classifier(
             name="llm_classifier",
             triggered=False,
             explanation=str(e),
+            degraded=True,
         )
     except ProviderResponseError:
         return SignalResult(
             name="llm_classifier",
             triggered=False,
             explanation="LLM response was not valid JSON — signal skipped.",
+            degraded=True,
         )
     except Exception as e:
         logger.exception("LLM classifier crashed")
@@ -73,6 +75,7 @@ async def check_llm_classifier(
             name="llm_classifier",
             triggered=False,
             explanation=f"LLM classifier error: {type(e).__name__}",
+            degraded=True,
         )
 
     verdict = str(parsed.get("verdict", "safe")).lower()

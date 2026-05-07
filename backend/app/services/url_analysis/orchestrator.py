@@ -51,5 +51,9 @@ async def scan_url(
         summary=summary,
     )
 
-    await cache.set_verdict(url, result)
+    # Only cache when all signals ran cleanly. A degraded result (provider
+    # unreachable, embedding model not loaded, etc.) shouldn't be locked in
+    # for hours — the next scan should retry with a fresh pipeline.
+    if not any(s.degraded for s in signals):
+        await cache.set_verdict(url, result)
     return result

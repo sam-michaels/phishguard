@@ -160,6 +160,7 @@ async def check_rag_threat_intel(
             name="rag_threat_intel",
             triggered=False,
             explanation=f"RAG unavailable: {_load_error}",
+            degraded=True,
         )
 
     try:
@@ -218,4 +219,5 @@ async def check_rag_threat_intel(
             name="rag_threat_intel",
             triggered=False,
             explanation=f"RAG query error: {type(e).__name__}",
+            degraded=True,
         )

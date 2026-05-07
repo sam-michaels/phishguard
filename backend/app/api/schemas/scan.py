@@ -20,6 +20,7 @@ class SignalResult(BaseModel):
     score_contribution: int = 0
     explanation: str
     metadata: dict = Field(default_factory=dict)
+    degraded: bool = False  # True when the signal errored out, not just "not triggered"
 
 
 class ScanVerdict(BaseModel):
